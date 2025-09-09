@@ -48,6 +48,7 @@ jobs:
             GIT_SHA=${{ github.sha }}
     outputs:
       image_id: ${{ steps.build_push.outputs.imageid }}
+      image_digest: ${{ steps.build_push.outputs.digest }}
       image_metadata: ${{ steps.build_push.outputs.metadata }}
   deploy_test:
     name: Deploy test
@@ -67,5 +68,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test pulling image
         env:
-          IMAGEID: ${{ needs.build.outputs.image_id }}
-        run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGEID
+          IMAGE_DIGEST: ${{ needs.build.outputs.image_digest }}
+        run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@$IMAGE_DIGEST
