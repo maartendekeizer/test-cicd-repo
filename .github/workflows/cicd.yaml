@@ -68,7 +68,7 @@ jobs:
       - name: Export envs
         env:
           IMAGEID: ${{ needs.build.outputs.image_id }}
-        run: export
+        run: echo ${{ env.IMAGE_NAME }}@$IMAGEID
       - name: Test pulling image
         env:
           IMAGEID: ${{ needs.build.outputs.image_id }}
