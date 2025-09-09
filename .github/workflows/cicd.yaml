@@ -65,6 +65,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Export envs
+        env:
+          IMAGEID: ${{ needs.build.outputs.image_id }}
+        run: export
       - name: Test pulling image
         env:
           IMAGEID: ${{ needs.build.outputs.image_id }}
