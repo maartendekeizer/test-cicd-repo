@@ -68,4 +68,4 @@ jobs:
       - name: Test pulling image
         env:
           IMAGEID: ${{ needs.build.outputs.image_id }}
-        run: docker image pull ${{ env.IMAGE_NAME }}@${{ IMAGEID }}
+        run: docker image pull ${{ env.IMAGE_NAME }}@$IMAGEID
