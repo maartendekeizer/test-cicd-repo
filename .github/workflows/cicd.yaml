@@ -18,14 +18,15 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Log in to the Container registry
+      - id: login
+        name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta_app
+      - id: meta_app
+        name: Extract metadata (tags, labels) for Docker
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -35,7 +36,8 @@ jobs:
             type=ref,event=branch
             type=sha
             type=sha,format=long
-      - name: Build and push app Docker image
+      - id: build_push
+        name: Build and push app Docker image
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}"
@@ -44,6 +46,9 @@ jobs:
           labels: ${{ steps.meta_app.outputs.labels }}
           build-args: |
             GIT_SHA=${{ github.sha }}
+    outputs:
+      image_id: ${{ steps.build_push.outputs.imageid }}
+      image_metadata: ${{ steps.build_push.outputs.metadata }}
   deploy_test:
     name: Deploy test
     runs-on: ubuntu-latest
@@ -60,5 +65,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Test docker command
-        run: docker ps -a
+      - name: Test pulling image
+        env:
+          IMAGEID: ${{ needs.build.outputs.image_id }}
+        run: docker image pull ${{ env.IMAGE_NAME }}@${{ IMAGEID }}
