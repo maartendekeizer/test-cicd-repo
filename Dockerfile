@@ -1,7 +1,7 @@
-FROM debian
+FROM debian:latest
 
-RUN apt update -y \
- && apt upgrade -y \
- && apt install nginx
+RUN apt-get update -y \
+ && apt-get upgrade -y \
+ && apt-get install -y nginx
 
 EXPOSE 80
