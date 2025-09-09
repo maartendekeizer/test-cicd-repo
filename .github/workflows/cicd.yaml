@@ -1,4 +1,4 @@
-name: "Check a commit"
+name: "Build image"
 
 on:
   push:
