@@ -6,7 +6,7 @@ on:
 jobs:
   dockerfile:
     name: Linter for Dockerfile
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: hadolint/hadolint-action@v3.1.0
