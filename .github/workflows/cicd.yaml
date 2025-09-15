@@ -68,12 +68,30 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull the image from the registry
         run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}
-      - name: List all docker images
-        run: docker image ls --digests --all
       - name: Add the testing tag to the image
         run: docker image tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing
-      - name: List all docker images
-        run: docker image ls --digests --all
+      - name: Push the image back to the registry with all the tags
+        run: docker push --all-tags ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+  deploy_acc:
+    name: Deploy acc
+    runs-on: ubuntu-latest
+    environment: acc
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - build
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull the image from the registry
+        run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}
+      - name: Add the testing tag to the image
+        run: docker image tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:acceptance
       - name: Push the image back to the registry with all the tags
         run: docker push --all-tags ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
