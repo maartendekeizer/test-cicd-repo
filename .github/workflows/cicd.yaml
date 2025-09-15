@@ -68,7 +68,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Test pulling image
         run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}
+      - name: Docker image list
+        run: docker image ls --all --digests
       - name: Add tag
         run: docker image tag ${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }} ${{ env.IMAGE_NAME }}:testing
-      - name: Docker image list
-        run: docker image ls --all
+
