@@ -66,10 +66,14 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Test pulling image
+      - name: Pull the image from the registry
         run: docker image pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}
-      - name: Docker image list
-        run: docker image ls --all --digests
-      - name: Add tag
+      - name: List all docker images
+        run: docker image ls --digest --all
+      - name: Add the testing tag to the image
         run: docker image tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }} ${{ env.IMAGE_NAME }}:testing
+      - name: List all docker images
+        run: docker image ls --digest --all
+      - name: Push the image back to the registry with all the tags
+        run: docker push -a ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}:testing
 
