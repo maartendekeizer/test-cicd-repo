@@ -9,7 +9,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-
 jobs:
   build:
     name: Build image
@@ -50,6 +49,7 @@ jobs:
       image_id: ${{ steps.build_push.outputs.imageid }}
       image_digest: ${{ steps.build_push.outputs.digest }}
       image_metadata: ${{ steps.build_push.outputs.metadata }}
+
   deploy_test:
     name: Deploy test
     runs-on: ubuntu-latest
@@ -72,6 +72,7 @@ jobs:
         run: docker image tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing
       - name: Push the image back to the registry with all the tags
         run: docker push --all-tags ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
   deploy_acc:
     name: Deploy acc
     runs-on: ubuntu-latest
