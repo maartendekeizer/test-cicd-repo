@@ -75,5 +75,5 @@ jobs:
       - name: List all docker images
         run: docker image ls --digests --all
       - name: Push the image back to the registry with all the tags
-        run: docker push -a ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build.outputs.image_digest }}:testing
+        run: docker push -a ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:testing
 
